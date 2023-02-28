@@ -1,12 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState, useContext } from 'react'
 import cls from 'classnames'
 import { usePrefixCls, pickDataProps } from '../__builtins__'
 import { isVoidField } from '@formily/core'
 import { connect, mapProps } from '@formily/react'
 import { useFormLayout, FormLayoutShallowContext } from '../form-layout'
-import { Tooltip, Popover } from 'antd'
-import { useLocaleReceiver } from 'antd/lib/locale-provider/LocaleReceiver'
-import defaultLocale from 'antd/lib/locale/default'
+import { Tooltip, Popover, ConfigProvider } from 'antd'
 import {
   QuestionCircleOutlined,
   CloseCircleOutlined,
@@ -132,7 +130,6 @@ export const BaseItem: React.FC<React.PropsWithChildren<IFormItemProps>> = ({
 }) => {
   const [active, setActive] = useState(false)
   const formLayout = useFormItemLayout(props)
-  const [formLocale] = useLocaleReceiver('Form')
   const { containerRef, contentRef, overflow } = useOverflow<
     HTMLDivElement,
     HTMLSpanElement
@@ -190,6 +187,7 @@ export const BaseItem: React.FC<React.PropsWithChildren<IFormItemProps>> = ({
     }
   }
 
+  const antdConfigContext = useContext(ConfigProvider.ConfigContext)
   const prefixCls = usePrefixCls('formily-item', props)
   const formatChildren =
     feedbackLayout === 'popover' ? (
@@ -239,7 +237,7 @@ export const BaseItem: React.FC<React.PropsWithChildren<IFormItemProps>> = ({
           <label>{label}</label>
           {!asterisk && requiredMark === 'optional' && (
             <span className={`${prefixCls}-optional`}>
-              {formLocale?.optional || defaultLocale.Form?.optional}
+              {antdConfigContext?.locale?.Form?.optional || '(optional)'}
             </span>
           )}
         </span>
